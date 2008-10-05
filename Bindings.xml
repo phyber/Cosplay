@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="CosplayButtonName" header="CosplayButtonHeader">
+		Cosplay:DressUpTarget()
+	</Binding>
+</Bindings>

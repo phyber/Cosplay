@@ -1,0 +1,15 @@
+## Interface: 20400
+## Title: Cosplay
+## Notes: Adds a button to undress the model in the Dressing room.
+## Notes-esES: Agrega un boton para desnudar al modelo en el vestuario.
+## Version: 1.0
+## Author: phyber
+## OptionalDeps: Ace3
+## X-Credits: HAXNINJA (UndressButton author)
+## X-Embeds: Ace3
+## X-Category: Interface Enhancements
+
+embeds.xml
+Locales\locales.xml
+
+Cosplay.lua
