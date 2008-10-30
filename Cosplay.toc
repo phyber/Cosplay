@@ -9,9 +9,9 @@
 ## X-Embeds: Ace3
 ## X-Category: Interface Enhancements
 
-#@no-lib-split@
+#@no-lib-strip@
 embeds.xml
-#@end-no-lib-split@
+#@end-no-lib-strip@
 
 Locales\locales.xml
 
