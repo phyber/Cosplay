@@ -1,4 +1,5 @@
 Cosplay = LibStub("AceAddon-3.0"):NewAddon("Cosplay", "AceEvent-3.0", "AceHook-3.0")
+local self, Cosplay = Cosplay, Cosplay
 local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
 local MainButtonsCreated = false
 local ABButtonsCreated = false
@@ -21,10 +22,10 @@ BINDING_NAME_CosplayButtonHeader = L["Undress Button"]
 local function getOptions()
 	local options = {
 		type = "group",
-		name = GetAddOnMetaData("Cosplay", "Title"),
+		name = GetAddOnMetadata("Cosplay", "Title"),
 		args = {
 			mpdesc = {
-				type = "group",
+				type = "description",
 				order = 0,
 				name = GetAddOnMetadata("Cosplay", "Notes"),
 			},
@@ -32,11 +33,12 @@ local function getOptions()
 				name = L["Rotatable Dress Up Model"],
 				desc = L["Make the dress up model rotatable with the mouse"],
 				type = "toggle",
+				width = "full",
 				order = 100,
 				get = function() return db.rotate end,
 				set = function()
 					db.rotate = not db.rotate
-					Cosplay:ToggleRotateable(db.rotate)
+					Cosplay:ToggleRotatable(db.rotate)
 				end,
 			},
 		},
@@ -145,7 +147,7 @@ local function MakeRotatable()
 
 	if not self:IsHooked(f, "OnUpdate") then
 		-- Handle the dragging of the model
-		self:SecureHookScript(f, "OnUpdate", function()
+		Cosplay:SecureHookScript(f, "OnUpdate", function()
 			if this.dragging then
 				local x, y = GetCursorPosition()
 				if this.cursorPosition.x > x then
@@ -157,14 +159,14 @@ local function MakeRotatable()
 			end
 		end)
 		-- Dragging start
-		self:SecureHookScript(f, "OnMouseDown", function()
+		Cosplay:SecureHookScript(f, "OnMouseDown", function()
 			if arg1 == "LeftButton" then
 				this.dragging = true
 				this.cursorPosition.x, this.cursorPosition.y = GetCursorPosition()
 			end
 		end)
 		-- Dragging end
-		self:SecureHookScript(f, "OnMouseUp", function()
+		Cosplay:SecureHookScript(f, "OnMouseUp", function()
 			if this.dragging then
 				this.dragging = false
 				this.cursorPosition.x, this.cursorPosition.y = nil
