@@ -8,15 +8,6 @@ local string_lower = string.lower
 BINDING_NAME_CosplayButtonName = L["Open the DressUpFrame"]
 BINDING_NAME_CosplayButtonHeader = L["Undress Button"]
 
-function Cosplay:OnEnable()
-	if not AHButtonsCreated then
-		self:RegisterEvent("AUCTION_HOUSE_SHOW", "CreateAHButtons")
-	end
-	if not MainButtonsCreated then
-		self:HookScript(DressUpFrame, "OnShow", "CreateMainButtons")
-	end
-end
-
 function Cosplay:CreateMainButtons()
 	if not MainButtonsCreated then
 		-- Undress button.  Lets get nekkid!
@@ -99,6 +90,53 @@ local function SetDressUpTargetBackground()
 	DressUpBackgroundBotRight:SetTexture(texture..4)
 end
 
+local function DisableRotatable()
+	local f = DressUpModel
+	DressUpModelRotateLeftButton:Show()
+	DressUpModelRotateRightButton:Show()
+	f:EnableMouse(false)
+end
+
+local function MakeRotatable()
+	local f = DressUpModel
+	-- Hide the rotation buttons
+	DressUpModelRotateLeftButton:Hide()
+	DressUpModelRotateRightButton:Hide()
+
+	f:EnableMouse(true)
+	f.draggingDirection = nil
+	f.cursorPosition = {}
+
+	if not self:IsHooked(f, "OnUpdate") then
+		-- Handle the dragging of the model
+		self:SecureHookScript(f, "OnUpdate", function()
+			if this.dragging then
+				local x, y = GetCursorPosition()
+				if this.cursorPosition.x > x then
+					Model_RotateLeft(f, (this.cursorPosition.x - x) * arg1)
+				elseif this.cursorPosition.x < x then
+					Model_RotateRight(f, (x - this.cursorPosition.x) * arg1)
+				end
+				this.cursorPosition.x, this.cursorPosition.y = GetCursorPosition()
+			end
+		end)
+		-- Dragging start
+		self:SecureHookScript(f, "OnMouseDown", function()
+			if arg1 == "LeftButton" then
+				this.dragging = true
+				this.cursorPosition.x, this.cursorPosition.y = GetCursorPosition()
+			end
+		end)
+		-- Dragging end
+		self:SecureHookScript(f, "OnMouseUp", function()
+			if this.dragging then
+				this.dragging = false
+				this.cursorPosition.x, this.cursorPosition.y = nil
+			end
+		end)
+	end
+end
+
 function Cosplay:DressUpTarget()
 	if not DressUpFrame:IsVisible() then
 		ShowUIPanel(DressUpFrame)
@@ -112,4 +150,15 @@ function Cosplay:DressUpTarget()
 	else
 		self:Reset()
 	end
+end
+
+function Cosplay:OnEnable()
+	if not AHButtonsCreated then
+		self:RegisterEvent("AUCTION_HOUSE_SHOW", "CreateAHButtons")
+	end
+	if not MainButtonsCreated then
+		self:HookScript(DressUpFrame, "OnShow", "CreateMainButtons")
+	end
+	-- Make the dress up model rotatable
+	MakeRotatable()
 end

@@ -4,7 +4,7 @@
 ## Notes-esES: Agrega un boton para desnudar al modelo en el vestuario.
 ## Version: @project-version@
 ## Author: phyber
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, Skinner
 ## X-Credits: HAXNINJA (UndressButton author)
 ## X-Embeds: Ace3
 ## X-Category: Interface Enhancements
