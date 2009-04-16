@@ -2,11 +2,47 @@ Cosplay = LibStub("AceAddon-3.0"):NewAddon("Cosplay", "AceEvent-3.0", "AceHook-3
 local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
 local MainButtonsCreated = false
 local ABButtonsCreated = false
+local DUMRotating = false
 local string_lower = string.lower
+-- Default options
+local defaults = {
+	profile = {
+		rotate = true,
+	},
+}
+-- Fill in db later
+local db
 
 -- Bindings
 BINDING_NAME_CosplayButtonName = L["Open the DressUpFrame"]
 BINDING_NAME_CosplayButtonHeader = L["Undress Button"]
+
+-- Return an options table
+local function getOptions()
+	local options = {
+		type = "group",
+		name = GetAddOnMetaData("Cosplay", "Title"),
+		args = {
+			mpdesc = {
+				type = "group",
+				order = 0,
+				name = GetAddOnMetadata("Cosplay", "Notes"),
+			},
+			rotate = {
+				name = L["Rotatable Dress Up Model"],
+				desc = L["Make the dress up model rotatable with the mouse"],
+				type = "toggle",
+				order = 100,
+				get = function() return db.rotate end,
+				set = function()
+					db.rotate = not db.rotate
+					Cosplay:ToggleRotateable(db.rotate)
+				end,
+			},
+		},
+	}
+	return options
+end
 
 function Cosplay:CreateMainButtons()
 	if not MainButtonsCreated then
@@ -137,6 +173,20 @@ local function MakeRotatable()
 	end
 end
 
+function Cosplay:ToggleRotatable(rotate)
+	if rotate then
+		if not DUMRotating then
+			DUMRotating = true
+			MakeRotatable()
+		end
+	else
+		if DUMRotating then
+			DUMRotating = false
+			DisableRotatable()
+		end
+	end
+end
+
 function Cosplay:DressUpTarget()
 	if not DressUpFrame:IsVisible() then
 		ShowUIPanel(DressUpFrame)
@@ -152,6 +202,15 @@ function Cosplay:DressUpTarget()
 	end
 end
 
+function Cosplay:OnInitialize()
+	-- Saved vars
+	self.db = LibStub("AceDB-3.0"):New("CosplayDB", defaults, "Default")
+	db = self.db.profile
+	-- Register options
+	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Cosplay", getOptions)
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Cosplay", GetAddOnMetadata("Cosplay", "Title"))
+end
+
 function Cosplay:OnEnable()
 	if not AHButtonsCreated then
 		self:RegisterEvent("AUCTION_HOUSE_SHOW", "CreateAHButtons")
@@ -159,6 +218,6 @@ function Cosplay:OnEnable()
 	if not MainButtonsCreated then
 		self:HookScript(DressUpFrame, "OnShow", "CreateMainButtons")
 	end
-	-- Make the dress up model rotatable
-	MakeRotatable()
+	-- Make the dress up model rotatable, if needed
+	self:ToggleRotatable(db.rotate)
 end
