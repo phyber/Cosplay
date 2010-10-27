@@ -147,29 +147,29 @@ local function MakeRotatable()
 
 	if not self:IsHooked(f, "OnUpdate") then
 		-- Handle the dragging of the model
-		Cosplay:SecureHookScript(f, "OnUpdate", function()
-			if this.dragging then
+		Cosplay:SecureHookScript(f, "OnUpdate", function(bself, curX)
+			if bself.dragging then
 				local x, y = GetCursorPosition()
-				if this.cursorPosition.x > x then
-					Model_RotateLeft(f, (this.cursorPosition.x - x) * arg1)
-				elseif this.cursorPosition.x < x then
-					Model_RotateRight(f, (x - this.cursorPosition.x) * arg1)
+				if bself.cursorPosition.x > x then
+					Model_RotateLeft(f, (bself.cursorPosition.x - x) * curX)
+				elseif bself.cursorPosition.x < x then
+					Model_RotateRight(f, (x - bself.cursorPosition.x) * curX)
 				end
-				this.cursorPosition.x, this.cursorPosition.y = GetCursorPosition()
+				bself.cursorPosition.x, bself.cursorPosition.y = GetCursorPosition()
 			end
 		end)
 		-- Dragging start
-		Cosplay:SecureHookScript(f, "OnMouseDown", function()
-			if arg1 == "LeftButton" then
-				this.dragging = true
-				this.cursorPosition.x, this.cursorPosition.y = GetCursorPosition()
+		Cosplay:SecureHookScript(f, "OnMouseDown", function(bself, button)
+			if button == "LeftButton" then
+				bself.dragging = true
+				bself.cursorPosition.x, bself.cursorPosition.y = GetCursorPosition()
 			end
 		end)
 		-- Dragging end
-		Cosplay:SecureHookScript(f, "OnMouseUp", function()
-			if this.dragging then
-				this.dragging = false
-				this.cursorPosition.x, this.cursorPosition.y = nil
+		Cosplay:SecureHookScript(f, "OnMouseUp", function(bself, button)
+			if bself.dragging then
+				bself.dragging = false
+				bself.cursorPosition.x, bself.cursorPosition.y = nil, nil
 			end
 		end)
 	end
