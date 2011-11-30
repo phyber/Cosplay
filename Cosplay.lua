@@ -130,16 +130,16 @@ end
 
 local function DisableRotatable()
 	local f = DressUpModel
-	DressUpModelRotateLeftButton:Show()
-	DressUpModelRotateRightButton:Show()
+--	DressUpModelRotateLeftButton:Show()
+--	DressUpModelRotateRightButton:Show()
 	f:EnableMouse(false)
 end
 
 local function MakeRotatable()
 	local f = DressUpModel
 	-- Hide the rotation buttons
-	DressUpModelRotateLeftButton:Hide()
-	DressUpModelRotateRightButton:Hide()
+--	DressUpModelRotateLeftButton:Hide()
+--	DressUpModelRotateRightButton:Hide()
 
 	f:EnableMouse(true)
 	f.draggingDirection = nil
