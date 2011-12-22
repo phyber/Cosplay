@@ -84,13 +84,13 @@ end
 
 function Cosplay:CreateAHButtons()
 	if not AHButtonsCreated then
-		local AuctionDUFUndressButton = CreateFrame("Button", "ADUFUndressButton", AuctionDressUpModel, "UIPanelButtonTemplate")
+		local AuctionDUFUndressButton = CreateFrame("Button", "ADUFUndressButton", SideDressUpModel, "UIPanelButtonTemplate")
 		ADUFUndressButton:SetWidth(70)
 		ADUFUndressButton:SetHeight(22)
 		ADUFUndressButton:SetText(L["Undress"])
-		ADUFUndressButton:SetPoint("BOTTOM", "AuctionDressUpFrameResetButton", "TOP", 0, 2)
+		ADUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
 		ADUFUndressButton:SetScript("OnClick", function()
-			AuctionDressUpModel:Undress()
+			SideDressUpModel:Undress()
 			PlaySound("gsTitleOptionOK")
 		end)
 
@@ -130,16 +130,11 @@ end
 
 local function DisableRotatable()
 	local f = DressUpModel
---	DressUpModelRotateLeftButton:Show()
---	DressUpModelRotateRightButton:Show()
 	f:EnableMouse(false)
 end
 
 local function MakeRotatable()
 	local f = DressUpModel
-	-- Hide the rotation buttons
---	DressUpModelRotateLeftButton:Hide()
---	DressUpModelRotateRightButton:Hide()
 
 	f:EnableMouse(true)
 	f.draggingDirection = nil
