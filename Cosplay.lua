@@ -5,6 +5,8 @@ local MainButtonsCreated = false
 local ABButtonsCreated = false
 local DUMRotating = false
 local string_lower = string.lower
+local UnitRace = UnitRace
+local DressUpFrame = DressUpFrame
 -- Default options
 local defaults = {
 	profile = {
@@ -100,8 +102,10 @@ function Cosplay:CreateAHButtons()
 end
 
 function Cosplay:Reset()
+	local race, fileName = UnitRace("player")
+
 	SetPortraitTexture(DressUpFramePortrait, "player")
-	SetDressUpBackground()
+	SetDressUpBackground(DressUpFrame, fileName)
 	DressUpModel:SetUnit("player")
 end
 
