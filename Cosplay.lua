@@ -1,12 +1,17 @@
 Cosplay = LibStub("AceAddon-3.0"):NewAddon("Cosplay", "AceEvent-3.0", "AceHook-3.0")
 local self, Cosplay = Cosplay, Cosplay
 local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
-local MainButtonsCreated = false
+
 local ABButtonsCreated = false
 local DUMRotating = false
+local MainButtonsCreated = false
+
 local string_lower = string.lower
-local UnitRace = UnitRace
 local DressUpFrame = DressUpFrame
+local UnitRace = UnitRace
+
+local GS_TITLE_OPTION_OK = SOUNDKIT.GS_TITLE_OPTION_OK
+
 -- Default options
 local defaults = {
 	profile = {
@@ -59,7 +64,7 @@ function Cosplay:CreateMainButtons()
 		DUFUndressButton:SetFrameStrata("HIGH")
 		DUFUndressButton:SetScript("OnClick", function()
 			DressUpModel:Undress()
-			PlaySound("gsTitleOptionOK")
+			PlaySound(GS_TITLE_OPTION_OK)
 		end)
 
 		-- Target button.
@@ -93,7 +98,7 @@ function Cosplay:CreateAHButtons()
 		ADUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
 		ADUFUndressButton:SetScript("OnClick", function()
 			SideDressUpModel:Undress()
-			PlaySound("gsTitleOptionOK")
+			PlaySound(GS_TITLE_OPTION_OK)
 		end)
 
 		AHButtonsCreated = true
@@ -192,7 +197,7 @@ function Cosplay:DressUpTarget()
 	if not DressUpFrame:IsVisible() then
 		ShowUIPanel(DressUpFrame)
 	else
-		PlaySound("gsTitleOptionOK")
+		PlaySound(GS_TITLE_OPTION_OK)
 	end
 	if UnitIsVisible("target") then
 		SetPortraitTexture(DressUpFramePortrait, "target")
