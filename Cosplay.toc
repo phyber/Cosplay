@@ -5,7 +5,6 @@
 ## Version: @project-version@
 ## Author: phyber
 ## OptionalDeps: Ace3, Skinner
-## SavedVariables: CosplayDB
 ## X-Credits: HAXNINJA (UndressButton author)
 ## X-Embeds: Ace3
 ## X-Category: Interface Enhancements
