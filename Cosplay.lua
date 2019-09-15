@@ -1,8 +1,8 @@
 Cosplay = LibStub("AceAddon-3.0"):NewAddon("Cosplay", "AceEvent-3.0", "AceHook-3.0")
-local self, Cosplay = Cosplay, Cosplay
+local Cosplay = Cosplay
 local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
 
-local ABButtonsCreated = false
+local AHButtonsCreated = false
 local MainButtonsCreated = false
 
 local string_lower = string.lower
@@ -54,11 +54,11 @@ end
 function Cosplay:CreateAHButtons()
 	if not AHButtonsCreated then
 		local AuctionDUFUndressButton = CreateFrame("Button", "ADUFUndressButton", SideDressUpModel, "UIPanelButtonTemplate")
-		ADUFUndressButton:SetWidth(70)
-		ADUFUndressButton:SetHeight(22)
-		ADUFUndressButton:SetText(L["Undress"])
-		ADUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
-		ADUFUndressButton:SetScript("OnClick", function()
+		AuctionDUFUndressButton:SetWidth(70)
+		AuctionDUFUndressButton:SetHeight(22)
+		AuctionDUFUndressButton:SetText(L["Undress"])
+		AuctionDUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
+		AuctionDUFUndressButton:SetScript("OnClick", function()
 			SideDressUpModel:Undress()
 			PlaySound(GS_TITLE_OPTION_OK)
 		end)
