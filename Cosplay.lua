@@ -5,7 +5,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
 local AHButtonsCreated = false
 local MainButtonsCreated = false
 
-local string_lower = string.lower
 local DressUpFrame = DressUpFrame
 local UnitRace = UnitRace
 
@@ -28,7 +27,6 @@ do
         return isClassic
     end
 end
-_G.IsClassic = IsClassic
 
 local DressUpModel
 do
@@ -77,12 +75,12 @@ end
 
 function Cosplay:CreateAHButtons()
     if not AHButtonsCreated then
-        local AuctionDUFUndressButton = CreateFrame("Button", "ADUFUndressButton", SideDressUpModel, "UIPanelButtonTemplate")
-        AuctionDUFUndressButton:SetWidth(70)
-        AuctionDUFUndressButton:SetHeight(22)
-        AuctionDUFUndressButton:SetText(L["Undress"])
-        AuctionDUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
-        AuctionDUFUndressButton:SetScript("OnClick", function()
+        local ADUFUndressButton = CreateFrame("Button", "ADUFUndressButton", SideDressUpModel, "UIPanelButtonTemplate")
+        ADUFUndressButton:SetWidth(70)
+        ADUFUndressButton:SetHeight(22)
+        ADUFUndressButton:SetText(L["Undress"])
+        ADUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
+        ADUFUndressButton:SetScript("OnClick", function()
             SideDressUpModel:Undress()
             PlaySound(GS_TITLE_OPTION_OK)
         end)
@@ -101,29 +99,6 @@ function Cosplay:Reset()
     DressUpModel:SetUnit("player")
 end
 
-local function DressUpTargetTexturePath()
-    local fileName = select(2, UnitRace("target"))
-    if fileName then
-        if string_lower(fileName) == "gnome" then
-            fileName = "Dwarf"
-        elseif string_lower(fileName) == "troll" then
-            fileName = "Orc"
-        end
-    else
-        fileName = "Orc"
-    end
-
-    return "Interface\\DressUpFrame\\DressUpBackground-"..fileName
-end
-
-local function SetDressUpTargetBackground()
-    local texture = DressUpTargetTexturePath()
-    DressUpBackgroundTopLeft:SetTexture(texture..1)
-    DressUpBackgroundTopRight:SetTexture(texture..2)
-    DressUpBackgroundBotLeft:SetTexture(texture..3)
-    DressUpBackgroundBotRight:SetTexture(texture..4)
-end
-
 function Cosplay:DressUpTarget()
     if not DressUpFrame:IsVisible() then
         ShowUIPanel(DressUpFrame)
@@ -132,8 +107,9 @@ function Cosplay:DressUpTarget()
     end
 
     if UnitIsVisible("target") then
+        local race, fileName = UnitRace("target")
         SetPortraitTexture(DressUpFramePortrait, "target")
-        SetDressUpTargetBackground()
+        SetDressUpBackground(DressUpFrame, fileName)
         DressUpModel:SetUnit("target")
     else
         self:Reset()
