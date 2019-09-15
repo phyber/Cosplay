@@ -15,6 +15,30 @@ local GS_TITLE_OPTION_OK = SOUNDKIT.GS_TITLE_OPTION_OK
 BINDING_NAME_CosplayButtonName = L["Open the DressUpFrame"]
 BINDING_NAME_CosplayButtonHeader = L["Undress Button"]
 
+local IsClassic
+do
+    local classic_versions = {
+        [11302] = true,
+    }
+
+    local version = select(4, GetBuildInfo())
+    local isClassic = classic_versions[version]
+
+    IsClassic = function()
+        return isClassic
+    end
+end
+_G.IsClassic = IsClassic
+
+local DressUpModel
+do
+    if IsClassic() then
+        DressUpModel = DressUpFrame.DressUpModel
+    else
+        DressUpModel = _G.DressUpModel
+    end
+end
+
 function Cosplay:CreateMainButtons()
 	if not MainButtonsCreated then
 		-- Undress button.  Lets get nekkid!
@@ -25,7 +49,7 @@ function Cosplay:CreateMainButtons()
 		DUFUndressButton:SetPoint("RIGHT", "DressUpFrameResetButton", "LEFT", 0, 0)
 		DUFUndressButton:SetFrameStrata("HIGH")
 		DUFUndressButton:SetScript("OnClick", function()
-			DressUpModel:Undress()
+            DressUpModel:Undress()
 			PlaySound(GS_TITLE_OPTION_OK)
 		end)
 
