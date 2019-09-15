@@ -1,9 +1,10 @@
-package-as: Cosplay
+# vim:ft=yaml:
+package-as: 'Cosplay'
 
 externals:
-    Libs/AceAddon-3.0: https://repos.wowace.com/wow/ace3/trunk/AceAddon-3.0
-    Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
-    Libs/AceHook-3.0: https://repos.wowace.com/wow/ace3/trunk/AceHook-3.0
-    Libs/AceLocale-3.0: https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0
-    Libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/tags/1.0.6.70000/CallbackHandler-1.0
-    Libs/LibStub: https://repos.wowace.com/wow/libstub/tags/1.0.2-70000
+    Libs/AceAddon-3.0: 'https://repos.wowace.com/wow/ace3/trunk/AceAddon-3.0'
+    Libs/AceEvent-3.0: 'https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0'
+    Libs/AceHook-3.0: 'https://repos.wowace.com/wow/ace3/trunk/AceHook-3.0'
+    Libs/AceLocale-3.0: 'https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0'
+    Libs/CallbackHandler-1.0: 'https://repos.wowace.com/wow/callbackhandler/tags/1.0.8/CallbackHandler-1.0'
+    Libs/LibStub: 'https://repos.wowace.com/wow/libstub/tags/1.0.2-70000'
