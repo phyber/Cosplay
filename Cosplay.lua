@@ -28,12 +28,16 @@ do
     end
 end
 
-local DressUpModel
+local DressUpFrame_Model
 do
     if IsClassic() then
-        DressUpModel = DressUpFrame.DressUpModel
+        DressUpFrame_Model = function()
+            return DressUpFrame.DressUpModel
+        end
     else
-        DressUpModel = _G.DressUpModel
+        DressUpFrame_Model = function()
+            return DressUpFrame.ModelScene:GetPlayerActor()
+        end
     end
 end
 
@@ -47,7 +51,7 @@ function Cosplay:CreateMainButtons()
         DUFUndressButton:SetPoint("RIGHT", "DressUpFrameResetButton", "LEFT", 0, 0)
         DUFUndressButton:SetFrameStrata("HIGH")
         DUFUndressButton:SetScript("OnClick", function()
-            DressUpModel:Undress()
+            DressUpFrame_Model():Undress()
             PlaySound(GS_TITLE_OPTION_OK)
         end)
 
