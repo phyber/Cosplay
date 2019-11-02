@@ -62,5 +62,6 @@ read_globals = {
     -- Frames
     "DressUpFrame",     -- Frame for regular Dress Up Model
     "DressUpModel",     -- Regular Dress Up Model
+    "SideDressUpFrame", -- Auction House Dress Up Frame
     "SideDressUpModel", -- Auction House Dress Up Model
 }

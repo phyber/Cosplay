@@ -5,11 +5,16 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Cosplay")
 local AHButtonsCreated = false
 local MainButtonsCreated = false
 
+-- Frames
 local DressUpFrame = DressUpFrame
+local SideDressUpFrame = SideDressUpFrame
+
+-- Functions
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsVisible = UnitIsVisible
 local UnitRace = UnitRace
 
+-- Globals
 local GS_TITLE_OPTION_OK = SOUNDKIT.GS_TITLE_OPTION_OK
 
 -- Bindings
@@ -58,31 +63,46 @@ do
     end
 end
 
+-- Create a function that will return an appropriate DressUpModel for the
+-- auction house
+local AHDressUpModel
+do
+    if IsClassic() then
+        AHDressUpModel = function()
+            return SideDressUpModel
+        end
+    else
+        AHDressUpModel = function()
+            return SideDressUpFrame.ModelScene:GetPlayerActor()
+        end
+    end
+end
+
 function Cosplay:CreateMainButtons()
     if not MainButtonsCreated then
         -- Undress button.  Lets get nekkid!
-        local DUFUndressButton = CreateFrame("Button", "DUFUndressButton", DressUpFrame, "UIPanelButtonTemplate")
-        DUFUndressButton:SetWidth(80)
-        DUFUndressButton:SetHeight(22)
-        DUFUndressButton:SetText(L["Undress"])
-        DUFUndressButton:SetPoint("RIGHT", "DressUpFrameResetButton", "LEFT", 0, 0)
-        DUFUndressButton:SetFrameStrata("HIGH")
-        DUFUndressButton:SetScript("OnClick", function()
+        local button = CreateFrame("Button", "DUFUndressButton", DressUpFrame, "UIPanelButtonTemplate")
+        button:SetWidth(80)
+        button:SetHeight(22)
+        button:SetText(L["Undress"])
+        button:SetPoint("RIGHT", "DressUpFrameResetButton", "LEFT", 0, 0)
+        button:SetFrameStrata("HIGH")
+        button:SetScript("OnClick", function()
             DressUpModel():Undress()
             PlaySound(GS_TITLE_OPTION_OK)
         end)
 
         -- Target button.
-        local DUFDressTargetButton = CreateFrame("Button", "DUFDressTargetButton", DressUpFrame, "UIPanelButtonTemplate")
-        DUFDressTargetButton:SetWidth(80)
-        DUFDressTargetButton:SetHeight(22)
-        DUFDressTargetButton:SetText(L["Target"])
-        DUFDressTargetButton:SetPoint("RIGHT", "DUFUndressButton", "LEFT", 0, 0)
-        DUFDressTargetButton:SetFrameStrata("HIGH")
-        DUFDressTargetButton:SetScript("OnClick", function()
+        local targetButton = CreateFrame("Button", "DUFDressTargetButton", DressUpFrame, "UIPanelButtonTemplate")
+        targetButton:SetWidth(80)
+        targetButton:SetHeight(22)
+        targetButton:SetText(L["Target"])
+        targetButton:SetPoint("RIGHT", "DUFUndressButton", "LEFT", 0, 0)
+        targetButton:SetFrameStrata("HIGH")
+        targetButton:SetScript("OnClick", function()
             self:DressUpTarget()
         end)
-        DUFDressTargetButton:SetScript("OnShow", function()
+        targetButton:SetScript("OnShow", function()
             self:Reset()
         end)
 
@@ -96,13 +116,20 @@ end
 
 function Cosplay:CreateAHButtons()
     if not AHButtonsCreated then
-        local ADUFUndressButton = CreateFrame("Button", "ADUFUndressButton", SideDressUpModel, "UIPanelButtonTemplate")
-        ADUFUndressButton:SetWidth(70)
-        ADUFUndressButton:SetHeight(22)
-        ADUFUndressButton:SetText(L["Undress"])
-        ADUFUndressButton:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
-        ADUFUndressButton:SetScript("OnClick", function()
-            SideDressUpModel:Undress()
+        local button = CreateFrame("Button", "ADUFUndressButton", SideDressUpFrame, "UIPanelButtonTemplate")
+        button:SetWidth(70)
+        button:SetHeight(22)
+        button:SetText(L["Undress"])
+
+        if IsClassic() then
+            button:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
+        else
+            button:SetPoint("BOTTOM", SideDressUpFrame.ResetButton, "TOP", 0, 2)
+            button:SetFrameLevel(SideDressUpFrame.ModelScene:GetFrameLevel() + 1)
+        end
+
+        button:SetScript("OnClick", function()
+            AHDressUpModel():Undress()
             PlaySound(GS_TITLE_OPTION_OK)
         end)
 
