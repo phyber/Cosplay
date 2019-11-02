@@ -45,6 +45,7 @@ read_globals = {
     "SetDressUpBackground",
     "SetPortraitTexture",
     "ShowUIPanel",
+    "UnitIsPlayer",
     "UnitIsVisible",
     "UnitRace",
 

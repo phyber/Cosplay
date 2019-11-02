@@ -6,6 +6,8 @@ local AHButtonsCreated = false
 local MainButtonsCreated = false
 
 local DressUpFrame = DressUpFrame
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsVisible = UnitIsVisible
 local UnitRace = UnitRace
 
 local GS_TITLE_OPTION_OK = SOUNDKIT.GS_TITLE_OPTION_OK
@@ -28,15 +30,30 @@ do
     end
 end
 
-local DressUpFrame_Model
+-- Create a function that returns an appropriate DressUpModel
+local DressUpModel
 do
     if IsClassic() then
-        DressUpFrame_Model = function()
+        DressUpModel = function()
             return DressUpFrame.DressUpModel
         end
     else
-        DressUpFrame_Model = function()
+        DressUpModel = function()
             return DressUpFrame.ModelScene:GetPlayerActor()
+        end
+    end
+end
+
+-- Create a function that will dress up the current target
+local DressUpTarget
+do
+    if IsClassic() then
+        DressUpTarget = function(unitID)
+            DressUpModel():SetUnit(unitID)
+        end
+    else
+        DressUpTarget = function(unitID)
+            DressUpModel():SetModelByUnit(unitID)
         end
     end
 end
@@ -51,7 +68,7 @@ function Cosplay:CreateMainButtons()
         DUFUndressButton:SetPoint("RIGHT", "DressUpFrameResetButton", "LEFT", 0, 0)
         DUFUndressButton:SetFrameStrata("HIGH")
         DUFUndressButton:SetScript("OnClick", function()
-            DressUpFrame_Model():Undress()
+            DressUpModel():Undress()
             PlaySound(GS_TITLE_OPTION_OK)
         end)
 
@@ -95,12 +112,29 @@ function Cosplay:CreateAHButtons()
     self:UnregisterEvent("AUCTION_HOUSE_SHOW")
 end
 
+
+local ResetPlayerModel
+do
+    if IsClassic() then
+        ResetPlayerModel = function()
+            DressUpTarget("player")
+        end
+    else
+        ResetPlayerModel = function()
+            DressUpTarget("player")
+            DressUpModel():SetSheathed(false)
+            DressUpModel():Dress()
+        end
+    end
+end
+
 function Cosplay:Reset()
     local race, fileName = UnitRace("player")
 
     SetPortraitTexture(DressUpFramePortrait, "player")
     SetDressUpBackground(DressUpFrame, fileName)
-    DressUpModel:SetUnit("player")
+
+    ResetPlayerModel()
 end
 
 function Cosplay:DressUpTarget()
@@ -110,11 +144,12 @@ function Cosplay:DressUpTarget()
         PlaySound(GS_TITLE_OPTION_OK)
     end
 
-    if UnitIsVisible("target") then
+    if UnitIsVisible("target") and UnitIsPlayer("target") then
         local race, fileName = UnitRace("target")
         SetPortraitTexture(DressUpFramePortrait, "target")
         SetDressUpBackground(DressUpFrame, fileName)
-        DressUpModel:SetUnit("target")
+
+        DressUpTarget("target")
     else
         self:Reset()
     end
@@ -127,5 +162,12 @@ function Cosplay:OnEnable()
 
     if not MainButtonsCreated then
         self:HookScript(DressUpFrame, "OnShow", "CreateMainButtons")
+    end
+
+    -- We need to secure hook the Reset button in retail, otherwise the
+    -- DressUpFrame won't reset properly if we've previously dressed up another
+    -- player.
+    if not IsClassic() then
+        self:SecureHookScript(DressUpFrame.ResetButton, "OnClick", "Reset")
     end
 end
