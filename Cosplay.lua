@@ -35,45 +35,47 @@ do
     end
 end
 
--- Create a function that returns an appropriate DressUpModel
-local DressUpModel
-do
-    if IsClassic() then
-        DressUpModel = function()
-            return DressUpFrame.DressUpModel
-        end
-    else
-        DressUpModel = function()
-            return DressUpFrame.ModelScene:GetPlayerActor()
-        end
-    end
-end
-
--- Create a function that will dress up the current target
-local DressUpTarget
-do
-    if IsClassic() then
-        DressUpTarget = function(unitID)
-            DressUpModel():SetUnit(unitID)
-        end
-    else
-        DressUpTarget = function(unitID)
-            DressUpModel():SetModelByUnit(unitID)
-        end
-    end
-end
-
--- Create a function that will return an appropriate DressUpModel for the
--- auction house
-local AHDressUpModel
+-- Client dependent local functions
+local AHDressUpModel   -- Returns the Auction House DressUpModel
+local DressUpModel     -- Returns the Dressing Room DressupModel
+local DressUpTarget    -- Takes a unitID and sets the model of the DressUpModel
+local ResetPlayerModel -- Resets the Dressing Room model
 do
     if IsClassic() then
         AHDressUpModel = function()
             return SideDressUpModel
         end
+
+        DressUpModel = function()
+            return DressUpFrame.DressUpModel
+        end
+
+        DressUpTarget = function(unitID)
+            DressUpModel():SetUnit(unitID)
+        end
+
+        ResetPlayerModel = function()
+            DressUpTarget("player")
+        end
     else
         AHDressUpModel = function()
             return SideDressUpFrame.ModelScene:GetPlayerActor()
+        end
+
+        DressUpModel = function()
+            return DressUpFrame.ModelScene:GetPlayerActor()
+        end
+
+        DressUpTarget = function(unitID)
+            DressUpModel():SetModelByUnit(unitID)
+        end
+
+        ResetPlayerModel = function()
+            DressUpTarget("player")
+
+            local model = DressUpModel()
+            model:SetSheathed(false)
+            model:Dress()
         end
     end
 end
@@ -140,27 +142,13 @@ function Cosplay:CreateAHButtons()
 end
 
 
-local ResetPlayerModel
-do
-    if IsClassic() then
-        ResetPlayerModel = function()
-            DressUpTarget("player")
-        end
-    else
-        ResetPlayerModel = function()
-            DressUpTarget("player")
-            DressUpModel():SetSheathed(false)
-            DressUpModel():Dress()
-        end
-    end
-end
-
 function Cosplay:Reset()
     local race, fileName = UnitRace("player")
 
     SetPortraitTexture(DressUpFramePortrait, "player")
     SetDressUpBackground(DressUpFrame, fileName)
 
+    -- Client dependent local function
     ResetPlayerModel()
 end
 
@@ -171,11 +159,14 @@ function Cosplay:DressUpTarget()
         PlaySound(GS_TITLE_OPTION_OK)
     end
 
+    -- Attempting to dress a target that isn't a player will crash the retail
+    -- client (8.2.5) and result in an untextured model in classic.
     if UnitIsVisible("target") and UnitIsPlayer("target") then
         local race, fileName = UnitRace("target")
         SetPortraitTexture(DressUpFramePortrait, "target")
         SetDressUpBackground(DressUpFrame, fileName)
 
+        -- Client dependent local function
         DressUpTarget("target")
     else
         self:Reset()
