@@ -23,15 +23,24 @@ BINDING_NAME_CosplayButtonHeader = L["Undress Button"]
 
 local IsClassic
 do
-    local classic_versions = {
-        [11302] = true,
-    }
-
+    local NUM_EXPANSIONS = 7
+    local RECENT_RETAIL_TOC = 80205
+    local GetNumExpansions = _G.GetNumExpansions
     local version = select(4, GetBuildInfo())
-    local isClassic = classic_versions[version]
+
+    local function IsRetailExpansionCount()
+        return GetNumExpansions() >= NUM_EXPANSIONS
+    end
+
+    local function IsRetailExpansionToc()
+        return version >= RECENT_RETAIL_TOC
+    end
+
+    local is_retail = IsRetailExpansionCount() and IsRetailExpansionToc()
+    local is_classic = not is_retail
 
     IsClassic = function()
-        return isClassic
+        return is_classic
     end
 end
 
