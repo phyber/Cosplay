@@ -67,10 +67,6 @@ do
             DressUpTarget("player")
         end
     else
-        AHDressUpModel = function()
-            return SideDressUpFrame.ModelScene:GetPlayerActor()
-        end
-
         DressUpModel = function()
             return DressUpFrame.ModelScene:GetPlayerActor()
         end
@@ -125,19 +121,15 @@ function Cosplay:CreateMainButtons()
     end
 end
 
+-- Since Retail 8.3.0 only Classic has the AH dressup frame.
 function Cosplay:CreateAHButtons()
     if not AHButtonsCreated then
         local button = CreateFrame("Button", "ADUFUndressButton", SideDressUpFrame, "UIPanelButtonTemplate")
         button:SetWidth(70)
         button:SetHeight(22)
         button:SetText(L["Undress"])
-
-        if IsClassic() then
-            button:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
-        else
-            button:SetPoint("BOTTOM", SideDressUpFrame.ResetButton, "TOP", 0, 2)
-            button:SetFrameLevel(SideDressUpFrame.ModelScene:GetFrameLevel() + 1)
-        end
+        button:SetPoint("BOTTOM", "SideDressUpModelResetButton", "TOP", 0, 2)
+        button:SetFrameStrata("HIGH")
 
         button:SetScript("OnClick", function()
             AHDressUpModel():Undress()
@@ -183,7 +175,8 @@ function Cosplay:DressUpTarget()
 end
 
 function Cosplay:OnEnable()
-    if not AHButtonsCreated then
+    -- AH DressUpFrame disappeared from Retail in 8.3.0
+    if not AHButtonsCreated and IsClassic() then
         self:RegisterEvent("AUCTION_HOUSE_SHOW", "CreateAHButtons")
     end
 
